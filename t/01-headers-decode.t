@@ -2,7 +2,8 @@
 
 use strict;
 use lib::abs '../lib';
-use Test::More tests => 5;
+use Test::More tests => 8;
+use URI;
 
 my $mod = 'HTTP::Easy::Headers';
 {no strict; ${$mod.'::NO_XS'} = 1;}
@@ -36,3 +37,27 @@ is_deeply
 	'garbled+unfold'
 	or diag explain $hash
 	;
+
+is
+	$mod->decode(
+		"Location: http://somewhere.com\n",
+		base => URI->new('http://test.me/test/'),
+	)->{location},
+	'http://somewhere.com',
+	'absolue location';
+
+is
+	$mod->decode(
+		"Location: /somewhere",
+		base => URI->new('http://test.me:81/test/?test=1'),
+	)->{location},
+	'http://test.me:81/somewhere',
+	'/relative location + port';
+
+is
+	$mod->decode(
+		"Location: ./somewhere",
+		base => URI->new('http://test.me/test/'),
+	)->{location},
+	'http://test.me/test/somewhere',
+	'./relative location';

@@ -9,6 +9,7 @@ sub new { my $pk = shift; bless shift,$pk }
 sub decode {
 	my $pk = shift;
 	local $_ = shift;
+	my %args = @_;
 	my %h;
 	y/\015//d;
 	
@@ -28,7 +29,22 @@ sub decode {
 		s/\012([\011\040]+)/ /sgo;
 		s{[\011\040]+$}{}so;
 	}
+	if (exists $h{location} and $h{location} !~ /^(?: $ | [^:\/?\#]+ : )/xo and $args{base}) {
+		$h{location} = ''.URI->new_abs($h{location},$args{base});
+	}
 	bless \%h, $pk;
+}
+
+sub HTTP {
+	my $self = shift;
+	if (@_) {
+		$self->{Status} = shift;
+		$self->{Reason} = shift if @_;
+		$self->{HTTPVersion} = shift if @_;
+		$self;
+	} else {
+		return "$self->{Status} $self->{Reason} HTTP/$self->{HTTPVersion}";
+	}
 }
 
 sub encode {

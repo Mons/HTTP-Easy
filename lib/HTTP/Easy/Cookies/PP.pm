@@ -23,6 +23,7 @@ sub decode {
 	my $jar = ref $pk ? $pk : bless {},$pk;
 	local $_ = shift;
 	my %args = ( host => '', @_ );
+	#warn "parse $_ for $args{host}";
 	my @kv;my @nv;
 	{
 		# parse NAME=VALUE
@@ -43,7 +44,7 @@ sub decode {
 						#[A-Z]..,\s..[\s-][A-Z]..[\s-]....\s..:..:..\sGMT # Loosest HTTP Date
 						|
 						#[^=;,[:space:]]* # strict bareword enrty
-						[^=;,]* # relaxed entry
+						[^;,]* # relaxed entry
 					)
 				)
 			)?

@@ -2,7 +2,7 @@
 
 use strict;
 use lib::abs '../lib';
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 my $mod = 'HTTP::Easy::Cookies';
 {no strict; ${$mod.'::NO_XS'} = 1;}
@@ -166,3 +166,21 @@ is_deeply
 	'object.decode5' or diag explain $p;
 
 #warn explain $p;
+is_deeply
+	$p = $mod->decode(
+		'PREF=ID=111:NW=1:TM=11:LM=22:S=-bBPlnkUvqt0fym8; expires=Mon, 16-Apr-2012 23:09:24 GMT; path=/; domain=.google.ru',
+		host => 'www.google.ru',
+	),
+	{
+		'.google.ru' => {
+			'/' => {
+				'PREF' => {
+					'expires' => 1334617764,
+					'value' => 'ID=111:NW=1:TM=11:LM=22:S=-bBPlnkUvqt0fym8'
+				}
+			}
+		},
+		version => 1
+	},
+	'google cookie' or diag explain $p;
+
