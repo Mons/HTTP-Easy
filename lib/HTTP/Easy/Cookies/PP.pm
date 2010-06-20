@@ -7,7 +7,7 @@ use Scalar::Util 'weaken';
 
 our @MoY = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 our %MoY;@MoY{@MoY} = (1..12);
-our @Leg = qw(comment domain expires httponly max-age path port secure version);
+our @Leg = qw(comment commenturl discard domain expires httponly max-age path port secure version );
 our %Leg; @Leg{@Leg} = (1)x@Leg;
 
 sub CHECK_PARAM () { 1 }
@@ -40,7 +40,7 @@ sub decode {
 					|
 					(
 						#[SMTWF][a-z][a-z],\s\d\d[\s-][JFMAJSOND][a-z][a-z][\s-]\d\d\d\d\s\d\d:\d\d:\d\d\sGMT # HTTP Date
-						[A-Z][a-z][a-z],\s\d\d[\s-][A-Z][a-z][a-z][\s-]\d\d\d\d\s\d\d:\d\d:\d\d\sGMT # Loose HTTP Date
+						[A-Z][a-z][a-z],\s\d\d[\s-][A-Z][a-z][a-z][\s-]\d\d(?:\d\d|)\s\d\d:\d\d:\d\d\sGMT # Loose HTTP Date
 						#[A-Z]..,\s..[\s-][A-Z]..[\s-]....\s..:..:..\sGMT # Loosest HTTP Date
 						|
 						#[^=;,[:space:]]* # strict bareword enrty
@@ -66,6 +66,7 @@ sub decode {
 				}
 			}
 			$value =~ s{\s+$}{}; # trim
+			$value =~ s/%([0-9a-fA-F]{2})/ chr(hex($1)) /gse;
 			if (CHECK_PARAM) {
 				if (!$Leg{lc $name} and !$flag and @kv) {
 					#warn "Left $name => $value";

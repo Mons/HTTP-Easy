@@ -2,7 +2,7 @@
 
 use strict;
 use lib::abs '../lib';
-use Test::More tests => 15;
+use Test::More tests => 16;
 
 my $mod = 'HTTP::Easy::Cookies';
 {no strict; ${$mod.'::NO_XS'} = 1;}
@@ -98,11 +98,19 @@ is_deeply
 or diag explain $p;
 
 is_deeply
+	$p = $mod->decode( 'x=x:1276995413%22; path=/; expires=Thu, 31-Dec-37 23:55:55 GMT;HttpOnly', host => 'test.me',),
+	{ 'test.me' => { '/' => {
+		x => { value => 'x:1276995413"', httponly => 1, expires => 'Thu, 31-Dec-37 23:55:55 GMT' }
+	}}, version => 1 },
+	'decode2' or diag explain $p;
+
+is_deeply
 	$p = $mod->decode( 'id1=1; path=/;', host => 'test.me',),
 	{ 'test.me' => { '/' => {
 		id1 => { value => 1 }
 	}}, version => 1 },
 	'decode1' or diag explain $p;
+
 
 is_deeply
 	$p->decode( 'id2=2; path=/;', host => 'test.me',),
@@ -183,4 +191,3 @@ is_deeply
 		version => 1
 	},
 	'google cookie' or diag explain $p;
-
