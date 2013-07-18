@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-HTTP::Easy - The great new HTTP::Easy!
+HTTP::Easy - Useful set for work with HTTP
 
 =cut
 
@@ -13,93 +13,37 @@ our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+    use HTTP::Easy::Headers;
+    my $h = "Connection: close\015\012".
+        "Expect: continue-100\015\012".
+        "Content-Type: text/html";
 
-Perhaps a little code snippet.
+    my $hash = HTTP::Easy::Headers->decode($h);
 
-    use HTTP::Easy;
-
-    my $foo = HTTP::Easy->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
-
+    $hash->{connection};     # 'close'
+    $hash->{expect};         # 'continue-100'
+    $hash->{'content-type'}; # 'text/html'
+    
+    my $hdr = HTTP::Easy::Headers->encode($hash);
+    
+    use HTTP::Easy::Cookie;
+    
+    my $cookie_jar = HTTP::Easy::Cookie->decode($hdr->{cookie});
+    
+    $hdr->{cookie} = HTTP::Easy::Cookie->encode($cookie_jar, host => 'example.net', path => '/path' );
+    
 =head1 AUTHOR
 
 Mons Anderson, C<< <mons at cpan.org> >>
 
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-http-easy at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=HTTP-Easy>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-
-
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc HTTP::Easy
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=HTTP-Easy>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/HTTP-Easy>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/HTTP-Easy>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/HTTP-Easy/>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
 =head1 LICENSE AND COPYRIGHT
 
-Copyright 2010 Mons Anderson.
+Copyright 2010-2013 Mons Anderson.
 
 This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
-See http://dev.perl.org/licenses/ for more information.
-
-
 =cut
 
-1; # End of HTTP::Easy
+1;
