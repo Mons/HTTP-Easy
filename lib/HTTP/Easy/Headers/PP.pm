@@ -47,10 +47,58 @@ sub HTTP {
 	}
 }
 
+our @hdr = map { lc $_ }
+our @hdrn  = (
+	qw(Upgrade),
+	qw(Accept Accept-Charset Accept-Encoding Accept-Language Accept-Ranges),
+  qw(Allow Authorization Cache-Control Connection Content-Disposition),
+  qw(Content-Encoding Content-Length Content-Range Content-Type Cookie DNT),
+  qw(Date ETag Expect Expires Host If-Modified-Since Last-Modified Link),
+  qw(Location Origin Proxy-Authenticate Proxy-Authorization Range),
+  qw(WebSocket-Origin WebSocket-Location Sec-WebSocket-Origin Sec-Websocket-Location ),
+  qw(Sec-WebSocket-Accept Sec-WebSocket-Extensions Sec-WebSocket-Key),
+  qw(Sec-WebSocket-Protocol Sec-WebSocket-Version Server Set-Cookie Status),
+  qw(TE Trailer Transfer-Encoding Upgrade User-Agent Vary WWW-Authenticate),
+  qw(X-Requested-With),
+);
+=for rem
+qw(
+	Upgrade Connection Content-Type
+	WebSocket-Origin WebSocket-Location Sec-WebSocket-Origin Sec-Websocket-Location Sec-WebSocket-Key Sec-WebSocket-Accept Sec-WebSocket-Protocol
+	Origin
+	Accept-Encoding
+	Host
+	Accept-Language
+	Accept-Charset
+	User-Agent
+	Content-Type
+	Accept
+	Referer
+	X-Requested-With
+	Connection
+	Content-Length
+);
+
+=cut
+
+our %hdr; @hdr{@hdr} = @hdrn;
+our %hdri; @hdri{ @hdr } = 0..$#hdr;
+
 sub encode {
 	my $pk = shift;
+	no warnings;
 	my $h = @_ || !ref $pk ? shift : $pk;
-	join ( "", map defined $h->{$_} ? "\u\L$_\E: $h->{$_}\015\012" : '', keys %$h )
+	my $reply = '';
+	my @good;my @bad;
+	for (keys %$h) {
+		if (length $h->{$_}) {
+			if (exists $hdr{lc $_}) { $good[ $hdri{lc $_} ] = $hdr{ lc $_ }.": ".$h->{$_}."\015\012"; }
+			else { push @bad, "\u\L$_\E: ".$h->{$_}."\015\012"; }
+		}
+	}
+	defined() and $reply .= $_ for @good,@bad;
+	return $reply;
+	#join ( "", map defined $h->{$_} ? "\u\L$_\E: $h->{$_}\015\012" : '', keys %$h )
 }
 
 1;

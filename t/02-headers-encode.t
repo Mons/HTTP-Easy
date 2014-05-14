@@ -24,26 +24,26 @@ my @lines = split /\015\012/, $hdr;
 is 0+@lines, 3, '3 lines' or diag $hdr;
 ok + (1 == grep { $_ eq 'Connection: close' } @lines), 'connection' or diag $hdr;
 ok + (1 == grep { $_ eq 'Expect: continue-100' } @lines), 'expect' or diag $hdr;
-ok + (1 == grep { $_ eq 'Content-type: text/html' } @lines), 'content-type' or diag $hdr;
+ok + (1 == grep { $_ eq 'Content-Type: text/html' } @lines), 'content-type' or diag $hdr;
 
 # Static method on object
 
 $h = $mod->new($h);
 
 $hdr = $mod->encode($h);
-my @lines = split /\015\012/, $hdr;
+@lines = split /\015\012/, $hdr;
 
 is 0+@lines, 3, '3 lines' or diag $hdr;
 ok + (1 == grep { $_ eq 'Connection: close' } @lines), 'connection' or diag $hdr;
 ok + (1 == grep { $_ eq 'Expect: continue-100' } @lines), 'expect' or diag $hdr;
-ok + (1 == grep { $_ eq 'Content-type: text/html' } @lines), 'content-type' or diag $hdr;
+ok + (1 == grep { $_ eq 'Content-Type: text/html' } @lines), 'content-type' or diag $hdr;
 
 # Object method
 
 $hdr = $h->encode();
-my @lines = split /\015\012/, $hdr;
+@lines = split /\015\012/, $hdr;
 
 is 0+@lines, 3, '3 lines' or diag $hdr;
 ok + (1 == grep { $_ eq 'Connection: close' } @lines), 'connection' or diag $hdr;
 ok + (1 == grep { $_ eq 'Expect: continue-100' } @lines), 'expect' or diag $hdr;
-ok + (1 == grep { $_ eq 'Content-type: text/html' } @lines), 'content-type' or diag $hdr;
+ok + (1 == grep { $_ eq 'Content-Type: text/html' } @lines), 'content-type' or diag $hdr;

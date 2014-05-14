@@ -122,8 +122,13 @@ sub decode {
 
 sub encode {
 	my $pk = shift;
-	my $jar = @_ || !ref $pk ? shift : $pk;
-	my %args = ( secure => 0, @_ );
+	my $jar;
+	if (ref $pk) {
+		$jar = $pk;
+	} else {
+		$jar = shift;
+	}
+	my %args = ( secure => 0, noqq => 0, @_ );
 	my $uhost = $args{host} || $HOST{ int $jar } || '';
 	my $upath = $args{path} || '/';
 	my @cookie;
@@ -141,7 +146,15 @@ sub encode {
 				next if !$args{secure} && exists $v3->{secure};
 				my $value = $v3->{value};
 				$value =~ s/([\\"])/\\$1/g;
-				push @cookie, qq{$k="$value"};
+				if ($args{noqq}) {
+					if ($value =~ /[ \t;]/) {
+						push @cookie, qq{$k="$value"};
+					} else {
+						push @cookie, qq{$k=$value};
+					}
+				} else {
+					push @cookie, qq{$k="$value"};
+				}
 			}
 		}
 	}
