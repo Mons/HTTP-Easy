@@ -9,5 +9,8 @@ WriteMakefile(
 	ABSTRACT_FROM     => 'lib/HTTP/Easy.pm', # retrieve abstract from module
 	PREREQ_PM         => {
 	},
+	TEST_REQUIRES     => {
+		'lib::abs' => 0
+	},
 	AUTHOR            => 'Mons Anderson <mons@cpan.org>',
 );
