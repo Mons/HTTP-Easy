@@ -16,6 +16,5 @@ t/02-headers-encode.t
 t/03-cookie-decode.t
 t/04-cookie-encode.t
 t/boilerplate.t
-t/manifest.t
 t/pod-coverage.t
 t/pod.t
