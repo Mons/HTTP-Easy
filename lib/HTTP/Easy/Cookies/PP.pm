@@ -7,7 +7,7 @@ use Scalar::Util 'weaken';
 
 our @MoY = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
 our %MoY;@MoY{@MoY} = (1..12);
-our @Leg = qw(comment commenturl discard domain expires httponly max-age path port secure version );
+our @Leg = qw(comment commenturl discard domain expires httponly max-age path port secure version samesite);
 our %Leg; @Leg{@Leg} = (1)x@Leg;
 
 sub CHECK_PARAM () { 1 }
